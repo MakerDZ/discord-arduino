@@ -1,0 +1,8 @@
+version : '1'
+
+services:
+  bot: 
+    build:
+      context: .
+      target: production
+    restart: always

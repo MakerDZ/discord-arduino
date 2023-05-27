@@ -1,0 +1,11 @@
+version: '1'
+
+services:
+  bot: 
+    build:
+      context: .
+      target : development
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    command: yarn dev

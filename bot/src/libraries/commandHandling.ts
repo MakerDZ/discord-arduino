@@ -5,7 +5,7 @@ import { join } from 'path';
 
 const commands : any = [];
 const commandFolder = join(__dirname, '..', 'commands')
-const commandFiles = fs.readdirSync(commandFolder).filter(file => file.endsWith('.ts'));
+const commandFiles = fs.readdirSync(commandFolder).filter(file => file.endsWith('.ts') || file.endsWith('.js'));
 for (const file of commandFiles) {
   const command = require(join(commandFolder, file));
   commands.push(command.default);

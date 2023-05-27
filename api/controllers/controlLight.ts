@@ -57,7 +57,7 @@ const getAllLights = async (ctx: RouterContext<'/api/v1/lights'>) => {
         }else{
             ctx.response.status = 200;
             ctx.response.body = {
-                _id : 0,
+                index : 0,
                 name : 'No lights found',
                 status : false
             }
@@ -76,8 +76,8 @@ const getAllLights = async (ctx: RouterContext<'/api/v1/lights'>) => {
 // Controller To Get Light By Id
 const getLight = async (ctx: RouterContext<'/api/v1/getlight/:id'>) => {
     try {
-        const id = ObjectId.createFromHexString(ctx.params.id);
-        const light = await Lights.findOne({ _id : id });
+        const index : number = +ctx.params.id ;
+        const light = await Lights.findOne({ index : index  });
         ctx.response.status = 200;
         ctx.response.body = light;
     } catch (error) {
@@ -94,14 +94,17 @@ const getLight = async (ctx: RouterContext<'/api/v1/getlight/:id'>) => {
 // Controller To Create New Light
 const createLight = async (ctx : RouterContext<'/api/v1/createlight'>) => {
     try{
-        const total_lights : number = 13;
+        const total_lights : number = 8;
+        const reqBodyRaw  = await ctx.request.body().value;
+        const name : string = reqBodyRaw.name;
         const count = await Lights.countDocuments();
         if(count < total_lights){
-            const id = await Lights.insertOne({
-                name : `Light ${count + 1}`,
+            await Lights.insertOne({
+                index : count+1,
+                name : name,
                 status : false
             })
-            const createdLight = await Lights.findOne({ _id : id})
+            const createdLight = await Lights.findOne({ index : count + 1})
             ctx.response.status = 200;
             ctx.response.body = createdLight;
         }else{
@@ -127,9 +130,9 @@ const updateLight = async (ctx : RouterContext<'/api/v1/updatelight/:id'>) => {
     try{
         const reqBodyRaw  = await ctx.request.body().value;
         const status : boolean = reqBodyRaw.status;
-        const id = ObjectId.createFromHexString(ctx.params.id);
-        await Lights.updateOne({ _id : id } , { $set : { status : status }}); 
-        const updatedLight = await Lights.findOne({ _id : id});
+        const index : number = +ctx.params.id ;
+        await Lights.updateOne({ index : index } , { $set : { status : status }}); 
+        const updatedLight = await Lights.findOne({ index : index});
         ctx.response.status = 200;
         ctx.response.body = updatedLight;
     }catch(error){
@@ -146,7 +149,7 @@ const updateLight = async (ctx : RouterContext<'/api/v1/updatelight/:id'>) => {
 const deleteLight = async (ctx : RouterContext<'/api/v1/deletelight'>) => {
     try{
         const count = await Lights.countDocuments();
-        const deleteLight = await Lights.deleteOne({ name : `Light ${count}`})
+        const deleteLight = await Lights.deleteOne({ index : count })
         ctx.response.body = deleteLight;
     }catch(error){
         console.log(`Response error: ${error}`);

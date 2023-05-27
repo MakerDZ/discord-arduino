@@ -1,8 +1,7 @@
-import { ObjectId } from "https://deno.land/x/mongo@v0.31.2/mod.ts";
 import db  from "../utility/dbConnection.ts" 
 
 interface LightSchema {
-    _id? : ObjectId,
+    index : number,
     name : String,
     status : boolean
 }
