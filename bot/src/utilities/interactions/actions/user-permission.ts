@@ -2,7 +2,6 @@ import { ChatInputCommandInteraction , Interaction, GuildMember } from "discord.
 import db from "../../../libraries/common/dbConnection";
 import action_success from "../../../components/common/action_success";
 import no_permission from "../../../components/common/no_permission";
-import action_fail from "../../../components/common/action_fail";
 import send_any from "../../../components/common/send_any";
 
 export default async function is_user_permission_setup(Interaction : Interaction){
