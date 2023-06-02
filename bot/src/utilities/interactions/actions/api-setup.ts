@@ -13,8 +13,9 @@ export default async function is_api_setup(Interaction : Interaction){
     if(!isAdmin){
         interaction.reply(no_permission());
     }else{
-        const url = await db.getData('api_url')
-        const token = await db.getData('api_token')
+        let url = await db.getData('api_url') as string;
+        let token = await db.getData('api_token') as string;
+        url = url == null ? "https://example.com" : url.endsWith('/') ? url.substring(0, url.length - 1) : url;url.endsWith('/') ? url.substring(0, url.length - 1) : url;
         switch(interaction.options.getSubcommandGroup()){
             case 'setup':
                 const api_url = interaction.options.get('api_url')?.value as string;
@@ -35,7 +36,7 @@ export default async function is_api_setup(Interaction : Interaction){
                 };
                 axios(config)
                 .then(async (response) => {
-                    const description = response.data.message
+                    const description = await response.data.message
                     if(response.data.status){
                         await interaction.reply(send_any(0x01C851, "✅ Success" , description));
                         return;

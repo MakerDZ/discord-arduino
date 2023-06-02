@@ -51,16 +51,19 @@ const getAllLights = async (ctx: RouterContext<'/api/v1/lights'>) => {
     try{
         const count = await Lights.countDocuments();
         if(count != 0){
-            const lights = await Lights.find();
+            const lightsCursor = await Lights.find();
+            const lights = await lightsCursor.toArray();
             ctx.response.status = 200;
             ctx.response.body = lights;
         }else{
             ctx.response.status = 200;
-            ctx.response.body = {
-                index : 0,
-                name : 'No lights found',
-                status : false
-            }
+            ctx.response.body = [
+                {
+                    index : 0,
+                    name : 'No lights found',
+                    status : false
+                }
+            ]
         }
     }catch(error){
         console.log(`Response error: ${error}`);
@@ -106,7 +109,11 @@ const createLight = async (ctx : RouterContext<'/api/v1/createlight'>) => {
             })
             const createdLight = await Lights.findOne({ index : count + 1})
             ctx.response.status = 200;
-            ctx.response.body = createdLight;
+            ctx.response.body = {
+                status : true,
+                message : 'You successfully created new light.',
+                data : createdLight
+            };
         }else{
             ctx.response.status = 200;
             ctx.response.body = {
@@ -150,7 +157,13 @@ const deleteLight = async (ctx : RouterContext<'/api/v1/deletelight'>) => {
     try{
         const count = await Lights.countDocuments();
         const deleteLight = await Lights.deleteOne({ index : count })
-        ctx.response.body = deleteLight;
+        if(deleteLight == 1){
+            ctx.response.status = 200;
+            ctx.response.body = {
+                status : true,
+                message : "Successfully deleted"
+            }
+        }
     }catch(error){
         console.log(`Response error: ${error}`);
         ctx.response.status = 500;
