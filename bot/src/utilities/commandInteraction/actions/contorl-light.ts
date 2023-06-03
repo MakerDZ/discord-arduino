@@ -9,10 +9,14 @@ export default async function is_control_ligth(Interaction : Interaction){
     const interaction = Interaction as ChatInputCommandInteraction;
     const member = interaction.member as GuildMember;
     const isAdmin = member.permissions.has("Administrator");
+    const permissioned_users = await db.getData('users') as Array<string>;
+    const interacted_user = interaction.user.id as string;
+    const have_permission = permissioned_users.includes(interacted_user);
     if(interaction.commandName !== "light") return;
-    if(!isAdmin){
+    if(!isAdmin && !have_permission){
         interaction.reply(no_permission());
     }else{
+        console.log(interaction.user.id);
         let url = await db.getData('api_url') as string;
         let token = await db.getData('api_token') as string;
         url = url == null ? "https://example.com" : url.endsWith('/') ? url.substring(0, url.length - 1) : url;url.endsWith('/') ? url.substring(0, url.length - 1) : url;
@@ -125,8 +129,3 @@ export default async function is_control_ligth(Interaction : Interaction){
         } 
     }
 }
-
-// to do 
-// able to create new light
-// able to delete light
-// able to fetch interface (which will be able to control lights)
