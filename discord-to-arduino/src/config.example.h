@@ -2,8 +2,9 @@
 #ifndef CONFIG_EXAMPLE_H
 #define CONFIG_EXAMPLE_H
 
-#define ssid "ssid"
-#define password "password"
-#define api "url"
+const char* ssid = "";
+const char* password = "";
+const char* api = "";
+const char* token = "";
 
 #endif
