@@ -30,13 +30,9 @@ void loop(){
   
   bool apiConnection = playAPI.isConnected();
   if (apiConnection) {
-    Serial.println("_______________________");
-    Serial.println("API Connection Success!");
-    Serial.println("_______________________");
+    //http begin success
   } else {
-    Serial.println("_______________________");
-    Serial.println("API Connection Failed!");
-    Serial.println("_______________________");
+    //http begin fail
   }
 }
 
