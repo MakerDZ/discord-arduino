@@ -47,14 +47,68 @@ public:
             const char* message = doc["message"]; 
             return status;
         } else {
-            Serial.println("http begin failed");
+            Serial.println("http begin failed at api connection test endpoint.");
             http.end();
             return false;
         }
     }
 
     int getTotalChannels(){
+        String EndPoint = String(_API_URL) + "/api/v1/lightcount";
+        http.begin(wifiClient, EndPoint);
+        http.addHeader("Content-Type", "text/plain");
+        http.addHeader("TOKEN", _API_TOKEN);
+        int httpCode = http.GET();
+        if (httpCode > 0) {
+            String payload = http.getString();
+            StaticJsonDocument<32> doc;
+            DeserializationError error = deserializeJson(doc, payload);
 
+            if (error) {
+            Serial.print(F("deserializeJson() failed: "));
+            Serial.println(error.f_str());
+            return 0;
+            }
+
+            int count = doc["count"]; 
+            return count;
+        }
+        else {
+            Serial.println("http begin failed at light count endpoint.");
+            http.end();
+            return 0;
+        }
+    }
+
+    bool lightStatus(int light_index){
+        String EndPoint = String(_API_URL) + "/api/v1/getlight/" + String(light_index);
+        http.begin(wifiClient, EndPoint);
+        http.addHeader("Content-Type", "text/plain");
+        http.addHeader("TOKEN", _API_TOKEN);
+        int httpCode = http.GET();
+        if (httpCode > 0) {
+            String payload = http.getString();
+            StaticJsonDocument<192> doc;
+            DeserializationError error = deserializeJson(doc, payload);
+
+            if (error) {
+            Serial.print(F("deserializeJson() failed: "));
+            Serial.println(error.f_str());
+            return 0;
+            }
+
+            const char* id = doc["_id"]; 
+            int index = doc["index"]; 
+            const char* name = doc["name"]; 
+            bool status = doc["status"]; 
+            Serial.println(status);
+            return status;
+        }
+        else {
+            Serial.println("http begin failed at light count endpoint.");
+            http.end();
+            return 0;
+        }
     }
 };
 

@@ -16,6 +16,8 @@ bool isConnected = false;
 bool apiConnection = false;
 PlayWithAPI playAPI(URL , TOKEN);
 
+int channelCount = 0;
+
 void setup(){
   Serial.begin(9600);
   isConnected = makeConnection(SSID,PASS);
@@ -30,9 +32,17 @@ void loop(){
   
   bool apiConnection = playAPI.isConnected();
   if (apiConnection) {
-    //http begin success
+    // Connection Successfully established
+    channelCount = playAPI.getTotalChannels();
+    for(int index = 0; index <= channelCount ; index++){
+      if(playAPI.lightStatus(index + 1)){
+        digitalWrite(gpio_pins[index], HIGH);
+      }else{
+        digitalWrite(gpio_pins[index], LOW);
+      }
+    }
   } else {
-    //http begin fail
+    // API Connection Failed
   }
 }
 
